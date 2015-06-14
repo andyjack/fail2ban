@@ -1,0 +1,35 @@
+[DEFAULT]
+
+# house IP address
+ignoreip =
+
+# Destination email address used solely for the interpolations in
+# jail.{conf,local} configuration files.
+destemail =
+
+# try to make banning actually work
+backend = polling
+
+# don't bother with dns
+usedns = no
+
+[ssh]
+enabled   = true
+# tidy up iptables rules.  Don't get a bunch of rules per IP.
+action = iptables-ipset-proto6-allports-syslog[name=ssh]
+
+[ssh-ddos]
+enabled   = true
+# tidy up iptables rules.  Don't get a bunch of rules per IP.
+action = iptables-ipset-proto6-allports-syslog[name=ssh-ddos]
+
+# http://stuffphilwrites.com/2013/03/permanently-ban-repeat-offenders-fail2ban/
+[ssh-repeater]
+enabled  = true
+filter   = sshban
+action   = iptables-ipset-proto6-allports-persist[name=ssh-repeater]
+#           sendmail-whois[name=SSH-repeater, dest=root, sender=root]
+logpath  = /var/log/syslog
+maxretry = 3
+findtime = 31536000
+bantime  = 31536000
